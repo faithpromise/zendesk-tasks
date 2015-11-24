@@ -1,0 +1,13 @@
+{
+  "name": "Tasks",
+  "author": {
+    "name": "Faith Promise Church",
+    "email": "dev@faithpromise.org",
+    "url": "http://faithpromise.org"
+  },
+  "defaultLocale": "en",
+  "private": true,
+  "location": "ticket_sidebar",
+  "version": "1.0",
+  "frameworkVersion": "1.0"
+}

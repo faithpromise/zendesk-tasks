@@ -1,0 +1,137 @@
+/*
+  Override Zendesk styles
+
+  Note: There are additional styles that override
+  Zendesk styles in layout.hdbs
+
+  ==================================================
+*/
+
+header {
+  background-color: transparent !important;
+}
+
+/*
+  Widget
+  ================================================== */
+
+.Widget-icon {
+  background-color:  transparent;
+  background-repeat: no-repeat;
+  background-size:   cover;
+  float:             right;
+  height:            25px;
+  width:             25px;
+
+  &--tasks {
+    background-image: app-asset-url("checked-box.png");
+  }
+
+  &--complete {
+    background-image: app-asset-url("thumbs-up.png");
+  }
+
+}
+
+.Widget-action {
+  float:       right;
+  line-height: 30px;
+  font-weight: bold;
+
+  // Make it look like a link
+  color:       #1a6690;
+  cursor:      pointer;
+
+  &:hover {
+    color:           #005580;
+    text-decoration: underline;
+  }
+}
+
+/*
+  Task List
+  ================================================== */
+
+.TaskList {
+  width:               100%;
+  margin-bottom:       20px;
+  cursor:              default;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
+
+  td {
+    padding:        5px 3px;
+    vertical-align: middle !important;
+
+    &:first-child {
+      width:        23px;
+      padding-left: 7px;
+    }
+
+    &:last-child {
+      padding-right: 7px;
+    }
+  }
+
+  tr:hover td {
+    background-color: #ececec;
+    transition:       .1s background-color ease-in-out;
+  }
+
+}
+
+/*
+  Task
+  ================================================== */
+
+.Task-title {
+  cursor: pointer;
+}
+
+.Task-checkbox {
+  display: inline-block !important;
+}
+
+.Task-trash {
+  cursor: pointer;
+}
+
+.status-overdue {
+  color: #e82a2a
+}
+
+.status-complete {
+  color:           #aaa;
+  text-decoration: line-through;
+}
+
+/*
+  Overdue video
+  ================================================== */
+
+.OverdueVideo {
+  margin-bottom: 20px;
+}
+
+/*
+  Form
+  ================================================== */
+
+.Form-field {
+  margin-bottom: 8px;
+}
+
+.Form-label {
+  margin:    4px 0 6px 0;
+  font-size: 11px;
+  color:     #999;
+}
+
+.Form-field {
+  width: calc(100% - 10px);
+}
+
+.Form-actions {
+  margin-top: 20px;
+}

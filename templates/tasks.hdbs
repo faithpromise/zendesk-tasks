@@ -1,0 +1,56 @@
+<form>
+
+  {{#if has_overdue_tasks}}
+  <iframe class="OverdueVideo" src="https://vine.co/v/ejBK2YY25IL/embed/simple" width="330" height="330" frameborder="0"></iframe><script src="https://platform.vine.co/static/scripts/embed.js"></script>
+  {{/if}}
+
+  {{#if no_tasks_found}}
+
+    <header>
+      <span class="logo"></span>
+      <h3>Tasks</h3>
+    </header>
+
+    <p>No tasks for this ticket</p>
+
+  {{else}}
+
+    {{#if tasks.incomplete}}
+
+      <header>
+        <span class="Widget-action js_show_task_form">add task</span>
+        <h3>Tasks ({{tasks.incomplete.length}})</h3>
+      </header>
+
+      <table class="TaskList">
+        {{#each tasks.incomplete}}
+          <tr>
+            <td><input class="Task-checkbox js_mark_task_complete" data-task-id="{{id}}" type="checkbox"></td>
+            <td class="Task-title status-{{status}} js_mark_task_complete" data-task-id="{{id}}">{{title}}</td>
+            <td class="status-{{status}}"><span title="{{due_at_formatted}}">{{due_at_friendly}}</span></td>
+            <td><img class="Task-trash js_delete_task" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task"></td>
+          </tr>
+        {{/each}}
+      </table>
+    {{/if}}
+
+    {{#if tasks.complete}}
+
+      <header>
+        <span class="Widget-icon Widget-icon--complete"></span>
+        <h3>Completed</h3>
+      </header>
+
+      <table class="TaskList">
+        {{#each tasks.complete}}
+          <tr>
+            <td><input class="Task-checkbox js_mark_task_incomplete" type="checkbox" data-task-id="{{id}}" checked></td>
+            <td class="Task-title status-complete js_mark_task_incomplete" data-task-id="{{id}}">{{title}}</td>
+            <td class="status-complete"><span title="Due: {{due_at_formatted}}, Completed {{completed_at_formatted}}">{{#if finisher}}{{finisher.first_name}}{{else}}Unknown{{/if}}</span></td>
+          </tr>
+        {{/each}}
+      </table>
+    {{/if}}
+  {{/if}}
+
+</form>

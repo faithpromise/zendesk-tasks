@@ -1,0 +1,22 @@
+<form class="property_box js_save_task">
+  <input type="hidden" name="zendesk_ticket_id" value="{{ticket_id}}">
+  <header>
+    <h3>New Task</h3>
+  </header>
+
+  <div class="Form-field">
+    <label class="Form-label">Title</label>
+    <input class="Form-field" id="fp_task_title_{{ticket_id}}" type="text" name="title" placeholder="Enter a name for your task" required>
+  </div>
+
+  <div class="Form-field">
+    <label class="Form-label">Due on</label>
+    <input class="Form-field hasDatepicker" id="fp_task_due_at_{{ticket_id}}" type="text" name="due_at" placeholder="e.g. October 1, 2008" required>
+  </div>
+
+  <div class="Form-actions">
+    <button class="btn btn-primary" type="submit">Add</button>
+    <button class="btn btn-link btn-danger js_cancel_task_form" type="button">cancel</button>
+  </div>
+
+</form>
