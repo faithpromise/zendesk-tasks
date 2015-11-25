@@ -3,34 +3,34 @@
     return {
 
         events: {
-            'app.activated': 'init',
-            'click .js_mark_task_complete': 'mark_task_complete',
+            'app.activated':                  'init',
+            'click .js_mark_task_complete':   'mark_task_complete',
             'click .js_mark_task_incomplete': 'mark_task_incomplete',
-            'click .js_delete_task': 'delete_task',
-            'click .js_show_task_form': 'show_task_form',
-            'click .js_cancel_task_form': 'cancel_task_form',
-            'submit .js_save_task': 'save_task'
+            'click .js_delete_task':          'delete_task',
+            'click .js_show_task_form':       'show_task_form',
+            'click .js_cancel_task_form':     'cancel_task_form',
+            'submit .js_save_task':           'save_task'
         },
 
         requests: {
 
             getTasks: function (ticket_id) {
                 return {
-                    url: 'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks',
-                    type: 'GET',
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks',
+                    type:     'GET',
                     dataType: 'json',
-                    cors: true
+                    cors:     true
                 };
             },
 
             save: function (ticket_id, data) {
 
                 return {
-                    url: 'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks',
-                    type: 'POST',
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks',
+                    type:     'POST',
                     dataType: 'json',
-                    data: data,
-                    cors: true
+                    data:     data,
+                    cors:     true
                 };
             },
 
@@ -39,18 +39,18 @@
                 console.log('data', data);
 
                 return {
-                    url: 'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks/' + task_id,
-                    type: 'PATCH',
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks/' + task_id,
+                    type:     'PATCH',
                     dataType: 'json',
-                    data: data,
-                    cors: true
+                    data:     data,
+                    cors:     true
                 };
             },
 
             delete: function (ticket_id, task_id) {
 
                 return {
-                    url: 'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks/' + task_id,
+                    url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks/' + task_id,
                     type: 'DELETE',
                     cors: true
                 };
@@ -68,11 +68,11 @@
             var ticket_id = this.ticket().id();
 
             this.ajax('getTasks', ticket_id).done(function (data) {
-                this.fp.tasks = data.tasks;
+                this.fp.tasks          = data.tasks;
                 this.format_task_dates(data.tasks);
-                data.no_tasks_found = data.tasks.length === 0;
+                data.no_tasks_found    = data.tasks.length === 0;
                 data.has_overdue_tasks = this._has_overdue_tasks();
-                data.tasks = this.split_tasks(data.tasks);
+                data.tasks             = this.split_tasks(data.tasks);
                 this.switchTo('tasks', data);
             });
         },
@@ -81,9 +81,11 @@
 
             var ticket_id = this.ticket().id(),
                 task_id   = this.$(event.target).data('task-id'),
+                agent     = this.currentUser(),
                 data      = {
-                    completed_at: moment().format(),
-                    completed_by: this.currentUser().email()
+                    completed_at:       moment().format(),
+                    completed_by_email: agent.email(),
+                    completed_by_name:  agent.name()
                 };
 
             this.ajax('update', ticket_id, task_id, data).done(function () {
@@ -99,8 +101,9 @@
                 task_id    = $target.data('task-id'),
                 task_title = this._get_task_title(task_id),
                 data       = {
-                    completed_at: null,
-                    completed_by: null
+                    completed_at:       null,
+                    completed_by_email: null,
+                    completed_by_name:  null
                 };
 
             // Checkbox has no meaning. It's just a visual. So, if it stays
@@ -149,7 +152,7 @@
                 due_at_selector = '#fp_task_due_at_' + ticket_id,
                 due_at          = this.$(due_at_selector).val(),
                 data            = {
-                    title: title,
+                    title:  title,
                     due_at: moment(due_at).endOf('day').format()
                 };
 
@@ -174,15 +177,15 @@
 
             for (i = 0; i < tasks.length; i++) {
 
-                due = moment(tasks[i].due_at);
+                due      = moment(tasks[i].due_at);
                 due_diff = now.diff(due, 'days');
 
                 completed = tasks[i].completed_at ? moment(tasks[i].completed_at) : null;
 
-                tasks[i].due_at_formatted = due.format(date_format);
+                tasks[i].due_at_formatted       = due.format(date_format);
                 tasks[i].completed_at_formatted = completed ? completed.format(date_format) : '';
 
-                tasks[i].due_at_friendly = Math.abs(due_diff) <= 7 ? due.calendar().replace(' at 11:59 PM', '') : due.from(now);
+                tasks[i].due_at_friendly       = Math.abs(due_diff) <= 7 ? due.calendar().replace(' at 11:59 PM', '') : due.from(now);
                 tasks[i].completed_at_friendly = completed ? completed.calendar().replace(' at 11:59 PM', '') : '';
 
             }
