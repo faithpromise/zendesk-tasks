@@ -4,6 +4,7 @@
 
         events: {
             'app.activated':                  'on_app_activated',
+            'pane.activated':                 'on_pane_activated',
             'click .js_mark_task_complete':   'mark_task_complete',
             'click .js_mark_task_incomplete': 'mark_task_incomplete',
             'click .js_delete_task':          'delete_task',
@@ -56,11 +57,21 @@
 
         },
 
-        on_app_activated: function () {
+        // Nav bar
+        on_pane_activated: function() {
+
+            if (this.currentLocation() === 'nav_bar') {
+                this.switchTo('calendar');
+            }
+
+        },
+
+        // Ticket sidebar
+        on_app_activated: function (event) {
 
             this.fp = {};
 
-            if (this.currentLocation() === 'ticket_sidebar') {
+            if (this.currentLocation() === 'ticket_sidebar' && event.firstLoad) {
                 this.load_tasks();
             }
 
