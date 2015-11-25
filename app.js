@@ -3,7 +3,7 @@
     return {
 
         events: {
-            'app.activated':                  'init',
+            'app.activated':                  'on_app_activated',
             'click .js_mark_task_complete':   'mark_task_complete',
             'click .js_mark_task_incomplete': 'mark_task_incomplete',
             'click .js_delete_task':          'delete_task',
@@ -36,8 +36,6 @@
 
             update: function (ticket_id, task_id, data) {
 
-                console.log('data', data);
-
                 return {
                     url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks/' + task_id,
                     type:     'PATCH',
@@ -58,10 +56,14 @@
 
         },
 
-        init: function () {
+        on_app_activated: function () {
+
             this.fp = {};
-            this.load_tasks();
-            //this.switchTo('task_form');
+
+            if (this.currentLocation() === 'ticket_sidebar') {
+                this.load_tasks();
+            }
+
         },
 
         load_tasks: function () {
@@ -156,8 +158,6 @@
                     due_at: moment(due_at).endOf('day').format()
                 };
 
-            console.log('data', data);
-
             event.preventDefault();
 
             this.ajax('save', ticket_id, data).done(function () {
@@ -189,8 +189,6 @@
                 tasks[i].completed_at_friendly = completed ? completed.calendar().replace(' at 11:59 PM', '') : '';
 
             }
-
-            console.log(tasks);
 
         },
 
