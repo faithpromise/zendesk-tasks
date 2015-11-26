@@ -44,8 +44,8 @@
       <table class="TaskList">
         {{#each tasks.complete}}
           <tr>
-            <td><input class="Task-checkbox js_mark_task_incomplete" type="checkbox" data-task-id="{{id}}" checked></td>
-            <td class="Task-title status-complete js_mark_task_incomplete" data-task-id="{{id}}">{{title}}</td>
+            <td><input class="Task-checkbox js_mark_task_incomplete" type="checkbox" data-task-id="{{id}}" data-task-title="{{title}}" checked></td>
+            <td class="Task-title status-complete js_mark_task_incomplete" data-task-id="{{id}}" data-task-title="{{title}}">{{title}}</td>
             <td class="status-complete"><span title="Due: {{due_at_formatted}}, Completed {{completed_at_formatted}}">{{#if finisher}}{{finisher.first_name}}{{else}}Unknown{{/if}}</span></td>
           </tr>
         {{/each}}
