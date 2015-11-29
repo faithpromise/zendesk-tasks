@@ -374,9 +374,9 @@
             }
 
             return [
-                { title: 'Today', tasks: today_tasks, count: today_tasks.length },
+                { title: 'Due Today', tasks: today_tasks, count: today_tasks.length },
                 { title: 'Next 7 Days', tasks: soon_tasks, count: soon_tasks.length },
-                { title: 'Future', tasks: future_tasks, count: future_tasks.length },
+                { title: 'Upcoming', tasks: future_tasks, count: future_tasks.length },
                 { title: 'Completed', tasks: complete_tasks, count: complete_tasks.length }
             ];
         },

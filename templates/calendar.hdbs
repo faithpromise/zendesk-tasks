@@ -1,4 +1,4 @@
-<form>
+<form class="Calendar">
 
   {{#if no_tasks_found}}
 
@@ -11,29 +11,35 @@
 
   {{else}}
 
-    {{#each categories}}
+    <table class="filter_tickets">
 
-      {{#if count}}
+      {{#each categories}}
 
-        <header>
-          <h3>{{title}} ({{count}})</h3>
-        </header>
+        {{#if count}}
 
-        <table class="TaskList">
-          {{#each tasks}}
+          <tbody>
+
             <tr>
-              <td><input class="Task-checkbox js_mark_task_complete" data-task-id="{{id}}" type="checkbox"></td>
-              <td class="Task-title status-{{status}} js_mark_task_complete" data-task-id="{{id}}">{{title}}</td>
-              <td class="Task-title status-{{status}}><a href="#/tickets/{{zendesk_ticket_id}}">{{subject}}</a></td>
-              <td class="status-{{status}}"><span title="{{due_at_formatted}}">{{due_at_friendly}}</span></td>
-              <td><img class="Task-trash js_delete_task" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task"></td>
+              <td colspan="5"><span class="">{{title}} ({{count}})</span></td>
             </tr>
-          {{/each}}
-        </table>
 
-      {{/if}}
+            {{#each tasks}}
+              <tr>
+                <td><input class="Task-checkbox js_mark_task_complete" data-task-id="{{id}}" type="checkbox"></td>
+                <td class="Task-title status-{{status}} js_mark_task_complete" data-task-id="{{id}}">{{title}}</td>
+                <td class="status-{{status}}"><span title="{{due_at_formatted}}">{{due_at_friendly}}</span></td>
+                <td class="Task-title status-{{status}}><a href="#/tickets/{{zendesk_ticket_id}}">{{subject}}</a></td>
+                <td><img class="Task-trash js_delete_task" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task"></td>
+              </tr>
+            {{/each}}
 
-    {{/each}}
+          </tbody>
+
+        {{/if}}
+
+      {{/each}}
+
+    </table>
 
   {{/if}}
 

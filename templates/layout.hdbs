@@ -5,7 +5,7 @@
   styles in app.css so we can't directly style `.app-0`
   ==================================================
   */
-  .app-0 {
+  .app-0.apps_ticket_sidebar {
     background-color: transparent !important;
     padding-left:     10px !important;
     padding-right:    10px !important;
