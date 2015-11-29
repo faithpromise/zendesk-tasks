@@ -1,1 +1,40 @@
-Calendar here
+<form>
+
+  {{#if no_tasks_found}}
+
+    <header>
+      <span class="logo"></span>
+      <h3>Tasks</h3>
+    </header>
+
+    <p>Oh yeah! There's nothin' to do!</p>
+
+  {{else}}
+
+    {{#each categories}}
+
+      {{#if count}}
+
+        <header>
+          <h3>{{title}} ({{count}})</h3>
+        </header>
+
+        <table class="TaskList">
+          {{#each tasks}}
+            <tr>
+              <td><input class="Task-checkbox js_mark_task_complete" data-task-id="{{id}}" type="checkbox"></td>
+              <td class="Task-title status-{{status}} js_mark_task_complete" data-task-id="{{id}}">{{title}}</td>
+              <td class="Task-title status-{{status}}><a href="#/tickets/{{zendesk_ticket_id}}">{{subject}}</a></td>
+              <td class="status-{{status}}"><span title="{{due_at_formatted}}">{{due_at_friendly}}</span></td>
+              <td><img class="Task-trash js_delete_task" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task"></td>
+            </tr>
+          {{/each}}
+        </table>
+
+      {{/if}}
+
+    {{/each}}
+
+  {{/if}}
+
+</form>
