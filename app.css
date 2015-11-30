@@ -227,6 +227,11 @@ header {
 .status-complete {
   color:           #aaa !important;
   text-decoration: line-through !important;
+
+  a,
+  a:hover {
+    color: inherit;
+  }
 }
 
 /*

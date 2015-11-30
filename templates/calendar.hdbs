@@ -18,7 +18,6 @@
           <th class="TicketTable-selection"></th>
           <th></th>
           <th></th>
-          <th>Subject</th>
           <th>Task</th>
           <th>Due</th>
           <th>Assigned To</th>
@@ -35,7 +34,7 @@
 
             <tr>
               <td class="TicketTable-leading"></td>
-              <td class="TicketTable-grouping" colspan="8"><span class="TicketTable-grouper">{{title}}:</span> {{count}}
+              <td class="TicketTable-grouping" colspan="8"><span class="TicketTable-grouper">{{title}}</span>
               </td>
               <td class="TicketTable-trailing"></td>
             </tr>
@@ -44,18 +43,22 @@
               <tr class="TicketTable-row">
                 <td class="TicketTable-leading"></td>
                 <td class="TicketTable-selection">
-                  <input class="Task-checkbox js_mark_task_complete" data-task-id="{{id}}" type="checkbox"></td>
+                  {{#if is_completed}}
+                    <input class="Task-checkbox js_mark_task_incomplete" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" data-task-title="{{title}}" type="checkbox" checked></td>
+                  {{else}}
+                    <input class="Task-checkbox js_mark_task_complete" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" type="checkbox"></td>
+                  {{/if}}
                 <td class="TicketTable-collision"></td>
                 <td class="TicketTable-status">
                   <span class="pop ticket_status_label compact open">{{ticket.status_abbrev}}</span>
                 </td>
                 <td class="TicketTable-subject status-{{status}}">
-                  <a href="#/tickets/{{zendesk_ticket_id}}">{{ticket.subject}}</a></td>
-                <td class="status-{{status}}" data-task-id="{{id}}">{{title}}</td>
+                  {{title}} / <a href="#/tickets/{{zendesk_ticket_id}}">{{ticket.subject}}</a>
+                </td>
                 <td class="status-{{status}}"><span title="{{due_at_formatted}}">{{due_at_friendly}}</span></td>
                 <td class="status-{{status}}">{{agent.name}}</td>
                 <td>
-                  <img class="Task-trash js_delete_task" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task">
+                  <img class="Task-trash js_delete_task" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task">
                 </td>
                 <td class="TicketTable-trailing"></td>
               </tr>
