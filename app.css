@@ -54,10 +54,6 @@
     border-top: 1px solid #eee;
   }
 
-  tr.TicketTable-row:hover td {
-    background-color: #f3f3f3;
-  }
-
   th {
     font-size:      11px;
     font-weight:    bold;
@@ -78,10 +74,25 @@
 
   .TicketTable-leading,
   .TicketTable-trailing {
-    padding:             0;
-    width:               15px;
-    border-top-color:    transparent;
-    border-bottom-color: transparent;
+    padding:          0;
+    width:            15px;
+    border-top-color: transparent;
+  }
+
+  .TicketTable-row:hover {
+    td {
+      background-color: #f3f3f3;
+    }
+
+    .TicketTable-leading,
+    .TicketTable-trailing {
+      border-top-color: #eee;
+    }
+
+    & + tr .TicketTable-leading,
+    & + tr .TicketTable-trailing {
+      border-top-color: #eee !important;
+    }
   }
 
   .TicketTable-selection {
@@ -210,12 +221,12 @@ header {
 }
 
 .status-overdue {
-  color: #e82a2a
+  color: #e82a2a !important;
 }
 
 .status-complete {
-  color:           #aaa;
-  text-decoration: line-through;
+  color:           #aaa !important;
+  text-decoration: line-through !important;
 }
 
 /*
