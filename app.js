@@ -79,48 +79,11 @@
                     type: 'DELETE',
                     cors: true
                 };
-            },
-
-            get_requirements: function (ticket_ids) {
-                return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/requirements',
-                    data:     { zendesk_ticket_ids: ticket_ids },
-                    dataType: 'json',
-                    cors:     true
-                };
-            },
-
-            get_ticket_requirements: function (ticket_id) {
-                return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements',
-                    dataType: 'json',
-                    cors:     true
-                };
-            },
-
-            save_requirement: function (ticket_id, data) {
-                return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements',
-                    type:     'POST',
-                    dataType: 'json',
-                    data:     data,
-                    cors:     true
-                };
-            },
-
-            delete_requirement: function (ticket_id, requirement_id) {
-                return {
-                    url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements/' + requirement_id,
-                    type: 'DELETE',
-                    cors: true
-                };
             }
 
         },
 
         on_app_activated: function (event) {
-
-            this.fp = this.fp || {};
 
             if (event.firstLoad) {
                 this.load_ticket_tasks(event);
