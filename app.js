@@ -53,7 +53,7 @@
                 };
             },
 
-            save: function (ticket_id, data) {
+            save_task: function (ticket_id, data) {
                 return {
                     url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks',
                     type:     'POST',
@@ -63,7 +63,7 @@
                 };
             },
 
-            update: function (ticket_id, task_id, data) {
+            update_task: function (ticket_id, task_id, data) {
                 return {
                     url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks/' + task_id,
                     type:     'PATCH',
@@ -73,9 +73,44 @@
                 };
             },
 
-            delete: function (ticket_id, task_id) {
+            delete_task: function (ticket_id, task_id) {
                 return {
                     url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks/' + task_id,
+                    type: 'DELETE',
+                    cors: true
+                };
+            },
+
+            get_requirements: function (ticket_ids) {
+                return {
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/requirements',
+                    data:     { zendesk_ticket_ids: ticket_ids },
+                    dataType: 'json',
+                    cors:     true
+                };
+            },
+
+            get_ticket_requirements: function (ticket_id) {
+                return {
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements',
+                    dataType: 'json',
+                    cors:     true
+                };
+            },
+
+            save_requirement: function (ticket_id, data) {
+                return {
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements',
+                    type:     'POST',
+                    dataType: 'json',
+                    data:     data,
+                    cors:     true
+                };
+            },
+
+            delete_requirement: function (ticket_id, requirement_id) {
+                return {
+                    url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/requirements/' + requirement_id,
                     type: 'DELETE',
                     cors: true
                 };
@@ -228,7 +263,7 @@
 
             ticket_id = is_sidebar ? this.ticket().id() : this.$(event.target).data('ticket-id');
 
-            this.ajax('update', ticket_id, task_id, data).done(function () {
+            this.ajax('update_task', ticket_id, task_id, data).done(function () {
 
                 if (is_sidebar) {
                     this.load_ticket_tasks();
@@ -261,7 +296,7 @@
             if ($target.is(':checkbox')) { $target.prop('checked', true); }
 
             if (confirm('Are you sure you want to mark the task,\n"' + task_title + '" incomplete?')) {
-                this.ajax('update', ticket_id, task_id, data).done(function () {
+                this.ajax('update_task', ticket_id, task_id, data).done(function () {
 
                     if (is_sidebar) {
                         this.load_ticket_tasks();
@@ -283,7 +318,7 @@
                 task_id     = this.$(event.target).data('task-id'),
                 ticket_id   = is_sidebar ? this.ticket().id() : this.$(event.target).data('ticket-id');
 
-            this.ajax('delete', ticket_id, task_id).done(function () {
+            this.ajax('delete_task', ticket_id, task_id).done(function () {
 
                 if (is_sidebar) {
                     this.load_ticket_tasks();
@@ -326,7 +361,7 @@
 
             event.preventDefault();
 
-            this.ajax('save', ticket_id, data).done(function () {
+            this.ajax('save_task', ticket_id, data).done(function () {
 
                 services.notify('New task added', 'notice');
                 this.show_task_form();
