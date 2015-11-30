@@ -125,8 +125,34 @@
             var self      = this,
                 agent_id  = this.currentUser().id(),
                 view_data = {},
-                ticket_ref,
                 agent_ref;
+
+            this.when(self.ajax('get_agents'), self.ajax('get_my_tickets', agent_id))
+                .done(
+                function (agents_data, tickets_data) {
+
+                    console.log('agents_data', agents_data[0].users);
+                    console.log('tickets_data', tickets_data[0].results);
+
+                    var agent_ref  = self.build_agent_reference(agents_data[0].users),
+                        ticket_ref = self.build_ticket_reference(tickets_data[0].results),
+                        ticket_ids = Object.keys(ticket_ref).join(',');
+
+                    self.ajax('get_tasks', ticket_ids).done(function (data) {
+
+                            self.format_task_dates(data.tasks);
+
+                            view_data.total          = data.tasks.length;
+                            view_data.no_tasks_found = data.tasks.length === 0;
+                            view_data.categories     = this.split_calendar_tasks(data.tasks, ticket_ref, agent_ref);
+
+                            self.switchTo('calendar', view_data);
+
+                        }
+                    );
+
+                }
+            );
 
             self.ajax('get_agents').done(function (agents_data) {
 
