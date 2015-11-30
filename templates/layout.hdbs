@@ -13,6 +13,11 @@
     width:            330px !important;
     border:           none !important;
   }
+
+  .app-0.apps_nav_bar {
+    margin-top: 0;
+    padding:    0;
+  }
 </style>
 <section data-main>
   Loading tasks...

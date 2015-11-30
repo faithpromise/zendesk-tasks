@@ -1,17 +1,29 @@
 <form class="Calendar">
 
-  {{#if no_tasks_found}}
+  <h1 class="Page-heading">Your Tasks</h1>
+  <div class="Page-headerCount">{{total}} tasks</div>
 
-    <header>
-      <span class="logo"></span>
-      <h3>Tasks</h3>
-    </header>
+  {{#if no_tasks_found}}
 
     <p>Oh yeah! There's nothin' to do!</p>
 
   {{else}}
 
-    <table class="filter_tickets">
+    <table class="TicketTable">
+
+      <thead>
+        <tr>
+          <th class="TicketTable-leading"></th>
+          <th class="TicketTable-selection"></th>
+          <th></th>
+          <th></th>
+          <th>Subject</th>
+          <th>Task</th>
+          <th>Due</th>
+          <th></th>
+          <th class="TicketTable-trailing"></th>
+        </tr>
+      </thead>
 
       {{#each categories}}
 
@@ -20,16 +32,24 @@
           <tbody>
 
             <tr>
-              <td colspan="5"><span class="">{{title}} ({{count}})</span></td>
+              <td class="TicketTable-leading"></td>
+              <td class="TicketTable-grouping" colspan="7"><span class="TicketTable-grouper">{{title}}:</span> {{count}}</td>
+              <td class="TicketTable-trailing"></td>
             </tr>
 
             {{#each tasks}}
-              <tr>
-                <td><input class="Task-checkbox js_mark_task_complete" data-task-id="{{id}}" type="checkbox"></td>
-                <td class="Task-title status-{{status}} js_mark_task_complete" data-task-id="{{id}}">{{title}}</td>
+              <tr class="TicketTable-row">
+                <td class="TicketTable-leading"></td>
+                <td class="TicketTable-selection"><input class="Task-checkbox js_mark_task_complete" data-task-id="{{id}}" type="checkbox"></td>
+                <td class="TicketTable-collision"></td>
+                <td class="TicketTable-status">
+                  <span class="pop ticket_status_label compact open">o</span>
+                </td>
+                <td class="TicketTable-subject status-{{status}}><a href="#/tickets/{{zendesk_ticket_id}}">{{subject}}</a></td>
+                <td class="status-{{status}}" data-task-id="{{id}}">{{title}}</td>
                 <td class="status-{{status}}"><span title="{{due_at_formatted}}">{{due_at_friendly}}</span></td>
-                <td class="Task-title status-{{status}}><a href="#/tickets/{{zendesk_ticket_id}}">{{subject}}</a></td>
                 <td><img class="Task-trash js_delete_task" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task"></td>
+                <td class="TicketTable-trailing"></td>
               </tr>
             {{/each}}
 
