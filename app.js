@@ -122,20 +122,17 @@
             if (this.currentLocation() !== 'nav_bar')
                 return;
 
-            var self     = this,
-                agent_id = this.currentUser().id(),
+            var self      = this,
+                agent_id  = this.currentUser().id(),
+                view_data = {},
                 ticket_ref,
                 agent_ref;
 
-            self.ajax('get_agents').done(function(agents_data) {
-
-                console.log('agents', agents_data);
+            self.ajax('get_agents').done(function (agents_data) {
 
                 agent_ref = self.build_agent_reference(agents_data.users);
 
                 self.ajax('get_my_tickets', agent_id).done(function (tickets_data) {
-
-                    console.log('tickets', tickets_data.results);
 
                     ticket_ref = self.build_ticket_reference(tickets_data.results);
 
@@ -143,11 +140,11 @@
 
                         this.format_task_dates(data.tasks);
 
-                        data.total          = data.tasks.length;
-                        data.no_tasks_found = data.tasks.length === 0;
-                        data.categories     = this.split_calendar_tasks(data.tasks, ticket_ref, agent_ref);
+                        view_data.total          = data.tasks.length;
+                        view_data.no_tasks_found = data.tasks.length === 0;
+                        view_data.categories     = this.split_calendar_tasks(data.tasks, ticket_ref, agent_ref);
 
-                        this.switchTo('calendar', data);
+                        this.switchTo('calendar', view_data);
 
                     });
 
@@ -163,7 +160,7 @@
 
             for (i = 0; i < agents.length; i++) {
                 ref[agents[i].id] = {
-                    id: agents[i].id,
+                    id:   agents[i].id,
                     name: agents[i].name
                 };
             }
@@ -178,10 +175,10 @@
 
             for (i = 0; i < tickets.length; i++) {
                 ref[tickets[i].id] = {
-                    id: tickets[i].id,
-                    assignee_id: tickets[i].assignee_id,
-                    subject: tickets[i].subject,
-                    status: tickets[i].status,
+                    id:            tickets[i].id,
+                    assignee_id:   tickets[i].assignee_id,
+                    subject:       tickets[i].subject,
+                    status:        tickets[i].status,
                     status_abbrev: tickets[i].status.substr(0, 1)
                 };
             }
@@ -202,9 +199,7 @@
                     completed_by_name:  agent.name()
                 };
 
-            if (is_sidebar) {
-                ticket_id = this.ticket().id();
-            }
+            ticket_id = is_sidebar ? this.ticket().id() : this.$(event.target).data('ticket-id');
 
             this.ajax('update', ticket_id, task_id, data).done(function () {
 
@@ -220,22 +215,19 @@
 
         },
 
-        mark_task_incomplete: function (event, ticket_id) {
+        mark_task_incomplete: function (event) {
 
             var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
                 is_calendar = this.currentLocation() === 'nav_bar',
                 $target     = this.$(event.target),
-                task_id     = $target.data('task-id'),
+                ticket_id   = is_sidebar ? this.ticket().id() : $target.data('ticket-id'),
                 task_title  = $target.data('task-title'),
+                task_id     = $target.data('task-id'),
                 data        = {
                     completed_at:       null,
                     completed_by_email: null,
                     completed_by_name:  null
                 };
-
-            if (is_sidebar) {
-                ticket_id = this.ticket().id();
-            }
 
             // Checkbox has no meaning. It's just a visual. So, if it stays
             // in incomplete, make sure it's always checked.
@@ -257,15 +249,12 @@
 
         },
 
-        delete_task: function (event, ticket_id) {
+        delete_task: function (event) {
 
             var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
                 is_calendar = this.currentLocation() === 'nav_bar',
-                task_id     = this.$(event.target).data('task-id');
-
-            if (is_sidebar) {
-                ticket_id = this.ticket().id();
-            }
+                task_id     = this.$(event.target).data('task-id'),
+                ticket_id   = is_sidebar ? this.ticket().id() : this.$(event.target).data('ticket-id');
 
             this.ajax('delete', ticket_id, task_id).done(function () {
 
@@ -391,8 +380,9 @@
                 is_today   = temp_date.isSame(now, 'day');
                 is_soon    = !is_today && !is_overdue && temp_date.isBefore(soon_before);
 
-                tasks[i].ticket = ticket_ref[tasks[i].zendesk_ticket_id];
-                tasks[i].agent = agent_ref[tasks[i].ticket.assignee_id];
+                tasks[i].is_completed = tasks[i].completed_at ? true : false;
+                tasks[i].ticket       = ticket_ref[tasks[i].zendesk_ticket_id];
+                tasks[i].agent        = agent_ref[tasks[i].ticket.assignee_id];
 
                 if (tasks[i].completed_at) {
                     tasks[i].status = 'complete';
