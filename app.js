@@ -15,9 +15,9 @@
 
         requests: {
 
-            get_agents: function() {
+            get_agents: function () {
                 return {
-                    url: '/api/v2/users.json?role[]=agent&role[]=admin',
+                    url:      '/api/v2/users.json?role[]=agent&role[]=admin',
                     dataType: 'json'
                 }
             },
