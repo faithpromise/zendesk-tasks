@@ -127,6 +127,7 @@
 
                     this.format_task_dates(data.tasks);
 
+                    data.total          = data.tasks.length;
                     data.no_tasks_found = data.tasks.length === 0;
                     data.categories     = this.split_calendar_tasks(data.tasks, ticket_ref);
 
