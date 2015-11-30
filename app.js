@@ -15,6 +15,13 @@
 
         requests: {
 
+            get_agents: function() {
+                return {
+                    url: '/api/v2/users.json?role[]=agent&role[]=admin',
+                    dataType: 'json'
+                }
+            },
+
             get_all_tickets: function () {
                 return {
                     url:      '/api/v2/search.json?query=type:ticket%20status<solved',
