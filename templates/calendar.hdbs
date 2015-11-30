@@ -56,7 +56,7 @@
                   {{title}} / <a href="#/tickets/{{zendesk_ticket_id}}">{{ticket.subject}}</a>
                 </td>
                 <td class="status-{{status}}"><span title="{{due_at_formatted}}">{{due_at_friendly}}</span></td>
-                <td class="status-{{status}}">{{agent.name}}</td>
+                <td class="status-{{status}}"><img class="TicketTable-gravatar" src="{{agent.photo}}"> {{agent.name}}</td>
                 <td>
                   <img class="Task-trash js_delete_task" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task">
                 </td>

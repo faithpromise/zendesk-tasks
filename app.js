@@ -186,8 +186,9 @@
 
             for (i = 0; i < agents.length; i++) {
                 ref[agents[i].id] = {
-                    id:   agents[i].id,
-                    name: agents[i].name
+                    id:    agents[i].id,
+                    name:  agents[i].name,
+                    photo: agents[i].photo ? agents[i].photo.content_url : '//assets.zendesk.com/images/types/user_sm.png'
                 };
             }
 
