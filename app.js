@@ -124,27 +124,51 @@
 
             var self     = this,
                 agent_id = this.currentUser().id(),
-                ticket_ref;
+                ticket_ref,
+                agent_ref;
 
-            self.ajax('get_my_tickets', agent_id).done(function (data) {
+            self.ajax('get_agents').done(function(agents_data) {
 
-                ticket_ref = self.build_ticket_reference(data.results);
+                console.log('agents', agents_data);
 
-                self.ajax('get_tasks', Object.keys(ticket_ref).join(',')).done(function (data) {
+                agent_ref = self.build_agent_reference(agents_data.users);
 
-                    this.format_task_dates(data.tasks);
+                self.ajax('get_my_tickets', agent_id).done(function (tickets_data) {
 
-                    data.total          = data.tasks.length;
-                    data.no_tasks_found = data.tasks.length === 0;
-                    data.categories     = this.split_calendar_tasks(data.tasks, ticket_ref);
+                    console.log('tickets', tickets_data.results);
 
-                    this.switchTo('calendar', data);
+                    ticket_ref = self.build_ticket_reference(tickets_data.results);
 
-                    ticket_ref = null;
+                    self.ajax('get_tasks', Object.keys(ticket_ref).join(',')).done(function (data) {
+
+                        this.format_task_dates(data.tasks);
+
+                        data.total          = data.tasks.length;
+                        data.no_tasks_found = data.tasks.length === 0;
+                        data.categories     = this.split_calendar_tasks(data.tasks, ticket_ref, agent_ref);
+
+                        this.switchTo('calendar', data);
+
+                    });
 
                 });
 
             });
+
+        },
+
+        build_agent_reference: function (agents) {
+
+            var i, ref = {};
+
+            for (i = 0; i < agents.length; i++) {
+                ref[agents[i].id] = {
+                    id: agents[i].id,
+                    name: agents[i].name
+                };
+            }
+
+            return ref;
 
         },
 
@@ -153,7 +177,13 @@
             var i, ref = {};
 
             for (i = 0; i < tickets.length; i++) {
-                ref[tickets[i].id] = tickets[i].subject;
+                ref[tickets[i].id] = {
+                    id: tickets[i].id,
+                    assignee_id: tickets[i].assignee_id,
+                    subject: tickets[i].subject,
+                    status: tickets[i].status,
+                    status_abbrev: tickets[i].status.substr(0, 1)
+                };
             }
 
             return ref;
@@ -339,7 +369,7 @@
             return result;
         },
 
-        split_calendar_tasks: function (tasks, ticket_ref) {
+        split_calendar_tasks: function (tasks, ticket_ref, agent_ref) {
 
             var i,
                 now            = moment(),
@@ -361,7 +391,8 @@
                 is_today   = temp_date.isSame(now, 'day');
                 is_soon    = !is_today && !is_overdue && temp_date.isBefore(soon_before);
 
-                tasks[i].subject = ticket_ref[tasks[i].zendesk_ticket_id];
+                tasks[i].ticket = ticket_ref[tasks[i].zendesk_ticket_id];
+                tasks[i].agent = agent_ref[tasks[i].ticket.assignee_id];
 
                 if (tasks[i].completed_at) {
                     tasks[i].status = 'complete';
