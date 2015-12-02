@@ -7,12 +7,12 @@
   </header>
 
   <div class="Form-field">
-    <label class="Form-label">Title</label>
+    <label class="Form-label" for="fp_task_title_{{zendesk_ticket_id}}">Title</label>
     <input class="Form-field" id="fp_task_title_{{zendesk_ticket_id}}" type="text" name="title" placeholder="Enter a name for your task" value="{{title}}" required>
   </div>
 
   <div class="Form-field">
-    <label class="Form-label">Due on</label>
+    <label class="Form-label" for="fp_task_due_at_{{zendesk_ticket_id}}">Due on</label>
     <input class="Form-field hasDatepicker" id="fp_task_due_at_{{zendesk_ticket_id}}" type="text" name="due_at" placeholder="e.g. October 1, 2008" value="{{due_at}}" required>
   </div>
 
