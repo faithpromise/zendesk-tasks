@@ -46,7 +46,7 @@
                 };
             },
 
-            find: function (task_id) {
+            task: function (task_id) {
                 return {
                     url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks/' + task_id,
                     dataType: 'json',
@@ -132,9 +132,6 @@
                 .done(
                 function (agents_data, tickets_data) {
 
-                    console.log('agents_data', agents_data[0].users);
-                    console.log('tickets_data', tickets_data[0].results);
-
                     var agent_ref  = self.build_agent_reference(agents_data[0].users),
                         ticket_ref = self.build_ticket_reference(tickets_data[0].results),
                         ticket_ids = Object.keys(ticket_ref).join(',');
@@ -211,9 +208,9 @@
 
         edit: function (event) {
 
-            var task_id = this.$(event.target).data('task-id');
+            var task_id = this.$(event.currentTarget).data('task-id');
 
-            this.ajax('find', task_id).done(function (result) {
+            this.ajax('task', task_id).done(function (result) {
                 this.switchTo('task_form', result.data);
             });
 
@@ -236,8 +233,6 @@
                     due_at:            moment(due_at).endOf('day').format()
                 };
 
-            console.log('data for new task', data);
-
             event.preventDefault();
 
             this.ajax(mode, data, task_id).done(function () {
@@ -257,8 +252,8 @@
 
             var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
                 is_calendar = this.currentLocation() === 'nav_bar',
-                task_id     = this.$(event.target).data('task-id'),
-                $target     = this.$(event.target),
+                task_id     = this.$(event.currentTarget).data('task-id'),
+                $target     = this.$(event.currentTarget),
                 ticket_id   = is_sidebar ? this.ticket().id() : $target.data('ticket-id'),
                 task_title  = $target.data('task-title');
 
@@ -284,7 +279,7 @@
 
             var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
                 is_calendar = this.currentLocation() === 'nav_bar',
-                task_id     = this.$(event.target).data('task-id'),
+                task_id     = this.$(event.currentTarget).data('task-id'),
                 agent       = this.currentUser(),
                 data        = {
                     completed_at:       moment().format(),
@@ -310,7 +305,7 @@
 
             var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
                 is_calendar = this.currentLocation() === 'nav_bar',
-                $target     = this.$(event.target),
+                $target     = this.$(event.currentTarget),
                 task_title  = $target.data('task-title'),
                 task_id     = $target.data('task-id'),
                 data        = {
