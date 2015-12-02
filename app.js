@@ -3,59 +3,60 @@
     return {
 
         events: {
-            'app.activated':                  'on_app_activated',
-            'pane.activated':                 'on_pane_activated',
-            'click .js_mark_task_complete':   'mark_task_complete',
-            'click .js_mark_task_incomplete': 'mark_task_incomplete',
-            'click .js_delete_task':          'delete_task',
-            'click .js_show_task_form':       'show_task_form',
-            'click .js_cancel_task_form':     'cancel_task_form',
-            'submit .js_save_task':           'save_task'
+            'app.activated':             'on_app_activated',
+            'pane.activated':            'on_pane_activated',
+            'click .js_new':             'new',
+            'click .js_edit':            'edit',
+            'click .js_cancel_edit':     'cancel_edit',
+            'submit .js_save':           'save',
+            'click .js_delete':          'delete',
+            'click .js_mark_complete':   'mark_complete',
+            'click .js_mark_incomplete': 'mark_incomplete'
         },
 
         requests: {
 
-            get_agents: function () {
+            agents: function () {
                 return {
                     url:      '/api/v2/users.json?role[]=agent&role[]=admin',
                     dataType: 'json'
                 }
             },
 
-            get_all_tickets: function () {
+            tickets: function () {
                 return {
                     url:      '/api/v2/search.json?query=type:ticket%20status<solved',
                     dataType: 'json'
                 }
             },
 
-            get_my_tickets: function () {
+            my_tickets: function () {
                 return {
                     url:      '/api/v2/search.json?query=type:ticket%20assignee:me%20status<solved',
                     dataType: 'json'
                 }
             },
 
-            get_tasks: function (ticket_ids) {
+            tasks: function (ticket_ids) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tasks',
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks',
                     data:     { zendesk_ticket_ids: ticket_ids },
                     dataType: 'json',
                     cors:     true
                 };
             },
 
-            get_ticket_tasks: function (ticket_id) {
+            find: function (task_id) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks',
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks/' + task_id,
                     dataType: 'json',
                     cors:     true
                 };
             },
 
-            save_task: function (ticket_id, data) {
+            create: function (data) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks',
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks',
                     type:     'POST',
                     dataType: 'json',
                     data:     data,
@@ -63,9 +64,9 @@
                 };
             },
 
-            update_task: function (ticket_id, task_id, data) {
+            update: function (data, task_id) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks/' + task_id,
+                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks/' + task_id,
                     type:     'PATCH',
                     dataType: 'json',
                     data:     data,
@@ -73,9 +74,9 @@
                 };
             },
 
-            delete_task: function (ticket_id, task_id) {
+            delete: function (task_id) {
                 return {
-                    url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/tickets/' + ticket_id + '/tasks/' + task_id,
+                    url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks/' + task_id,
                     type: 'DELETE',
                     cors: true
                 };
@@ -86,7 +87,7 @@
         on_app_activated: function (event) {
 
             if (event.firstLoad) {
-                this.load_ticket_tasks(event);
+                this.load_ticket_sidebar(event);
             }
 
         },
@@ -95,22 +96,24 @@
             this.load_calendar();
         },
 
-        load_ticket_tasks: function () {
+        load_ticket_sidebar: function () {
 
             if (this.currentLocation() !== 'ticket_sidebar')
                 return;
 
             var ticket_id = this.ticket().id();
 
-            this.ajax('get_ticket_tasks', ticket_id).done(function (data) {
+            this.ajax('tasks', ticket_id).done(function (result) {
 
-                this.format_task_dates(data.tasks);
+                var view_data = {};
 
-                data.no_tasks_found    = data.tasks.length === 0;
-                data.has_overdue_tasks = this._has_overdue_tasks(data.tasks);
-                data.tasks             = this.split_ticket_tasks(data.tasks);
+                this.format_task_dates(result.data);
 
-                this.switchTo('tasks', data);
+                view_data.no_tasks_found    = result.data.length === 0;
+                view_data.has_overdue_tasks = this._has_overdue_tasks(result.data);
+                view_data.tasks             = this.split_ticket_tasks(result.data);
+
+                this.switchTo('tasks', view_data);
             });
 
         },
@@ -125,7 +128,7 @@
                 view_data = {},
                 agent_ref;
 
-            this.when(self.ajax('get_agents'), self.ajax('get_my_tickets', agent_id))
+            this.when(self.ajax('agents'), self.ajax('my_tickets', agent_id))
                 .done(
                 function (agents_data, tickets_data) {
 
@@ -136,13 +139,13 @@
                         ticket_ref = self.build_ticket_reference(tickets_data[0].results),
                         ticket_ids = Object.keys(ticket_ref).join(',');
 
-                    self.ajax('get_tasks', ticket_ids).done(function (data) {
+                    self.ajax('tasks', ticket_ids).done(function (result) {
 
-                            self.format_task_dates(data.tasks);
+                            self.format_task_dates(result.data);
 
-                            view_data.total          = data.tasks.length;
-                            view_data.no_tasks_found = data.tasks.length === 0;
-                            view_data.categories     = this.split_calendar_tasks(data.tasks, ticket_ref, agent_ref);
+                            view_data.total          = result.data.length;
+                            view_data.no_tasks_found = result.data.length === 0;
+                            view_data.categories     = this.split_calendar_tasks(result.data, ticket_ref, agent_ref);
 
                             self.switchTo('calendar', view_data);
 
@@ -151,30 +154,6 @@
 
                 }
             );
-
-            self.ajax('get_agents').done(function (agents_data) {
-
-                agent_ref = self.build_agent_reference(agents_data.users);
-
-                self.ajax('get_my_tickets', agent_id).done(function (tickets_data) {
-
-                    ticket_ref = self.build_ticket_reference(tickets_data.results);
-
-                    self.ajax('get_tasks', Object.keys(ticket_ref).join(',')).done(function (data) {
-
-                        this.format_task_dates(data.tasks);
-
-                        view_data.total          = data.tasks.length;
-                        view_data.no_tasks_found = data.tasks.length === 0;
-                        view_data.categories     = this.split_calendar_tasks(data.tasks, ticket_ref, agent_ref);
-
-                        this.switchTo('calendar', view_data);
-
-                    });
-
-                });
-
-            });
 
         },
 
@@ -212,7 +191,96 @@
 
         },
 
-        mark_task_complete: function (event, ticket_id) {
+        new: function () {
+
+            var ticket_id      = this.ticket().id(),
+                title_selector = '#fp_task_title_' + ticket_id,
+                data           = {
+                    id:                null,
+                    zendesk_ticket_id: ticket_id,
+                    title:             '',
+                    due_at:            ''
+                };
+
+            this.switchTo('task_form', data);
+            this.$(title_selector).focus();
+
+            // TODO: Can't get datepicker to work
+            //this.$('#fp_task_due_at').datepicker({dateFormat: "yy-mm-dd"});
+        },
+
+        edit: function (event) {
+
+            var task_id = this.$(event.target).data('task-id');
+
+            this.ajax('find', task_id).done(function (result) {
+                this.switchTo('task_form', result.data);
+            });
+
+        },
+
+        cancel_edit: function () {
+            this.load_ticket_sidebar();
+        },
+
+        save: function (event) {
+
+            var ticket_id = this.ticket().id(),
+                task_id   = this.$('#fp_task_id_' + ticket_id).val(),
+                title     = this.$('#fp_task_title_' + ticket_id).val(),
+                due_at    = this.$('#fp_task_due_at_' + ticket_id).val(),
+                mode      = task_id ? 'update' : 'create',
+                data      = {
+                    zendesk_ticket_id: this.ticket().id(),
+                    title:             title,
+                    due_at:            moment(due_at).endOf('day').format()
+                };
+
+            console.log('data for new task', data);
+
+            event.preventDefault();
+
+            this.ajax(mode, data, task_id).done(function () {
+
+                if (mode === 'create') {
+                    services.notify('New task added', 'notice');
+                    this.new();
+                } else {
+                    this.load_ticket_sidebar();
+                }
+
+            });
+
+        },
+
+        delete: function (event) {
+
+            var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
+                is_calendar = this.currentLocation() === 'nav_bar',
+                task_id     = this.$(event.target).data('task-id'),
+                $target     = this.$(event.target),
+                ticket_id   = is_sidebar ? this.ticket().id() : $target.data('ticket-id'),
+                task_title  = $target.data('task-title');
+
+            if (!confirm('Are you sure you want to delete the task,\n"' + task_title + '"')) {
+                return;
+            }
+
+            this.ajax('delete', task_id).done(function () {
+
+                if (is_sidebar) {
+                    this.load_ticket_sidebar();
+                }
+
+                if (is_calendar) {
+                    this.load_calendar();
+                }
+
+            });
+
+        },
+
+        mark_complete: function (event) {
 
             var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
                 is_calendar = this.currentLocation() === 'nav_bar',
@@ -224,12 +292,10 @@
                     completed_by_name:  agent.name()
                 };
 
-            ticket_id = is_sidebar ? this.ticket().id() : this.$(event.target).data('ticket-id');
-
-            this.ajax('update_task', ticket_id, task_id, data).done(function () {
+            this.ajax('update', data, task_id).done(function () {
 
                 if (is_sidebar) {
-                    this.load_ticket_tasks();
+                    this.load_ticket_sidebar();
                 }
 
                 if (is_calendar) {
@@ -240,12 +306,11 @@
 
         },
 
-        mark_task_incomplete: function (event) {
+        mark_incomplete: function (event) {
 
             var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
                 is_calendar = this.currentLocation() === 'nav_bar',
                 $target     = this.$(event.target),
-                ticket_id   = is_sidebar ? this.ticket().id() : $target.data('ticket-id'),
                 task_title  = $target.data('task-title'),
                 task_id     = $target.data('task-id'),
                 data        = {
@@ -259,10 +324,10 @@
             if ($target.is(':checkbox')) { $target.prop('checked', true); }
 
             if (confirm('Are you sure you want to mark the task,\n"' + task_title + '" incomplete?')) {
-                this.ajax('update_task', ticket_id, task_id, data).done(function () {
+                this.ajax('update', data, task_id).done(function () {
 
                     if (is_sidebar) {
-                        this.load_ticket_tasks();
+                        this.load_ticket_sidebar();
                     }
 
                     if (is_calendar) {
@@ -272,69 +337,6 @@
                 });
             }
 
-        },
-
-        delete_task: function (event) {
-
-            var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
-                is_calendar = this.currentLocation() === 'nav_bar',
-                task_id     = this.$(event.target).data('task-id'),
-                ticket_id   = is_sidebar ? this.ticket().id() : this.$(event.target).data('ticket-id');
-
-            this.ajax('delete_task', ticket_id, task_id).done(function () {
-
-                if (is_sidebar) {
-                    this.load_ticket_tasks();
-                }
-
-                if (is_calendar) {
-                    this.load_calendar();
-                }
-
-            });
-
-        },
-
-        show_task_form: function () {
-
-            var ticket_id      = this.ticket().id(),
-                title_selector = '#fp_task_title_' + ticket_id,
-                data           = {
-                    ticket_id: this.ticket().id()
-                };
-
-            this.switchTo('task_form', data);
-            this.$(title_selector).focus();
-
-            // TODO: Can't get datepicker to work
-            //this.$('#fp_task_due_at').datepicker({dateFormat: "yy-mm-dd"});
-        },
-
-        save_task: function (event) {
-
-            var ticket_id       = this.ticket().id(),
-                title_selector  = '#fp_task_title_' + ticket_id,
-                title           = this.$(title_selector).val(),
-                due_at_selector = '#fp_task_due_at_' + ticket_id,
-                due_at          = this.$(due_at_selector).val(),
-                data            = {
-                    title:  title,
-                    due_at: moment(due_at).endOf('day').format()
-                };
-
-            event.preventDefault();
-
-            this.ajax('save_task', ticket_id, data).done(function () {
-
-                services.notify('New task added', 'notice');
-                this.show_task_form();
-
-            });
-
-        },
-
-        cancel_task_form: function () {
-            this.load_ticket_tasks();
         },
 
         format_task_dates: function (tasks) {

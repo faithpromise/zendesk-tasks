@@ -44,9 +44,9 @@
                 <td class="TicketTable-leading"></td>
                 <td class="TicketTable-selection">
                   {{#if is_completed}}
-                    <input class="Task-checkbox js_mark_task_incomplete" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" data-task-title="{{title}}" type="checkbox" checked></td>
+                    <input class="Task-checkbox js_mark_incomplete" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" data-task-title="{{title}}" type="checkbox" checked></td>
                   {{else}}
-                    <input class="Task-checkbox js_mark_task_complete" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" type="checkbox"></td>
+                    <input class="Task-checkbox js_mark_complete" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" type="checkbox"></td>
                   {{/if}}
                 <td class="TicketTable-collision"></td>
                 <td class="TicketTable-status">
@@ -58,7 +58,9 @@
                 <td class="status-{{status}}"><span title="{{due_at_formatted}}">{{due_at_friendly}}</span></td>
                 <td class="status-{{status}}"><img class="TicketTable-gravatar" src="{{agent.photo}}"> {{agent.name}}</td>
                 <td>
-                  <img class="Task-trash js_delete_task" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task">
+                  {{#unless is_completed}}
+                    <img class="Task-trash-icon js_delete" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task">
+                  {{/unless}}
                 </td>
                 <td class="TicketTable-trailing"></td>
               </tr>

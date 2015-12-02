@@ -195,15 +195,6 @@ header {
   td {
     padding:        5px 3px;
     vertical-align: middle !important;
-
-    &:first-child {
-      width:        23px;
-      padding-left: 7px;
-    }
-
-    &:last-child {
-      padding-right: 7px;
-    }
   }
 
   tr:hover td {
@@ -211,22 +202,30 @@ header {
     transition:       .1s background-color ease-in-out;
   }
 
-}
+  .Task-title {
+    max-width:     160px;
+    overflow:      hidden;
+    white-space:   nowrap;
+    text-overflow: ellipsis;
+    cursor:        pointer;
+  }
 
-/*
-  Task
-  ================================================== */
+  .Task-check {
+    width:        15px;
+    padding-left: 7px;
+  }
 
-.Task-title {
-  cursor: pointer;
-}
+  .Task-checkbox {
+    display: inline-block !important;
+  }
 
-.Task-checkbox {
-  display: inline-block !important;
-}
+  .Task-due {
+    max-width:     70px;
+    overflow:      hidden;
+    white-space:   nowrap;
+    text-overflow: ellipsis;
+  }
 
-.Task-trash {
-  cursor: pointer;
 }
 
 .status-overdue {
@@ -241,6 +240,10 @@ header {
   a:hover {
     color: inherit;
   }
+}
+
+.Task-trash-icon {
+  cursor:  pointer;
 }
 
 /*
