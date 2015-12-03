@@ -8,7 +8,6 @@
         than accessing the window object.
      */
     (function () {
-        console.log('this this', this);
         is_dev  = /zat=true/.test(this.location.href);
         api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
     })();
