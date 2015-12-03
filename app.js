@@ -1,5 +1,8 @@
 (function () {
 
+    var is_dev = /zat=true/.test(window.location.href),
+        api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+
     return {
 
         events: {
@@ -20,26 +23,26 @@
                 return {
                     url:      '/api/v2/users.json?role[]=agent&role[]=admin',
                     dataType: 'json'
-                }
+                };
             },
 
             tickets: function () {
                 return {
                     url:      '/api/v2/search.json?query=type:ticket%20status<solved',
                     dataType: 'json'
-                }
+                };
             },
 
             my_tickets: function () {
                 return {
                     url:      '/api/v2/search.json?query=type:ticket%20assignee:me%20status<solved',
                     dataType: 'json'
-                }
+                };
             },
 
             tasks: function (ticket_ids) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks',
+                    url:      api_url + '/api/ticket-tasks',
                     data:     { zendesk_ticket_ids: ticket_ids },
                     dataType: 'json',
                     cors:     true
@@ -48,7 +51,7 @@
 
             task: function (task_id) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks/' + task_id,
+                    url:      api_url + '/api/ticket-tasks/' + task_id,
                     dataType: 'json',
                     cors:     true
                 };
@@ -56,7 +59,7 @@
 
             create: function (data) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks',
+                    url:      api_url + '/api/ticket-tasks',
                     type:     'POST',
                     dataType: 'json',
                     data:     data,
@@ -66,7 +69,7 @@
 
             update: function (data, task_id) {
                 return {
-                    url:      'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks/' + task_id,
+                    url:      api_url + '/api/ticket-tasks/' + task_id,
                     type:     'PATCH',
                     dataType: 'json',
                     data:     data,
@@ -76,7 +79,7 @@
 
             delete: function (task_id) {
                 return {
-                    url:  'http://admin.faithpromise.192.168.10.10.xip.io/api/ticket-tasks/' + task_id,
+                    url:  api_url + '/api/ticket-tasks/' + task_id,
                     type: 'DELETE',
                     cors: true
                 };
