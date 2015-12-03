@@ -1,7 +1,17 @@
 (function () {
 
-    var is_dev = /zat=true/.test(window.location.href),
+    var is_dev, api_url;
+
+    /*
+        Zendesk says don't access window, but I can't think of
+        another way to conditionally set environment (is_dev)
+        than accessing the window object.
+     */
+    (function () {
+        console.log('this this', this);
+        is_dev  = /zat=true/.test(this.location.href);
         api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+    })();
 
     return {
 
