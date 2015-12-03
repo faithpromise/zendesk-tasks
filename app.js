@@ -91,12 +91,18 @@
 
             if (event.firstLoad) {
                 this.load_ticket_sidebar(event);
+                this.load_styles();
             }
 
         },
 
         on_pane_activated: function () {
             this.load_calendar();
+        },
+
+        load_styles: function () {
+            var url = this.assetURL('styles.css');
+            this.$('head').append('<link rel="stylesheet" type="text/css" href="' + url + '">');
         },
 
         load_ticket_sidebar: function () {

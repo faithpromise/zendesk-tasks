@@ -1,24 +1,3 @@
-<style type="text/css" scoped>
-  /*
-  ==================================================
-  Inline styles because Zendesk prepends `.app-0` to
-  styles in app.css so we can't directly style `.app-0`
-  ==================================================
-  */
-  .app-0.apps_ticket_sidebar {
-    background-color: transparent !important;
-    padding-left:     10px !important;
-    padding-right:    10px !important;
-    clear:            both;
-    width:            330px !important;
-    border:           none !important;
-  }
-
-  .app-0.apps_nav_bar {
-    margin-top: 0;
-    padding:    0;
-  }
-</style>
 <section data-main>
   Loading tasks...
 </section>
