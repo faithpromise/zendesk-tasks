@@ -252,9 +252,8 @@
 
             var is_sidebar  = this.currentLocation() === 'ticket_sidebar',
                 is_calendar = this.currentLocation() === 'nav_bar',
-                task_id     = this.$(event.currentTarget).data('task-id'),
                 $target     = this.$(event.currentTarget),
-                ticket_id   = is_sidebar ? this.ticket().id() : $target.data('ticket-id'),
+                task_id     = $target.data('task-id'),
                 task_title  = $target.data('task-title');
 
             if (!confirm('Are you sure you want to delete the task,\n"' + task_title + '"')) {
