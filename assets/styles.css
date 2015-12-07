@@ -15,6 +15,6 @@ we inject this stylesheet via JS.
 }
 
 .app-0.apps_nav_bar {
-  margin-top: 0;
-  padding:    0;
+  margin-top: 0 !important;
+  padding:    0 !important;
 }

@@ -1,15 +1,25 @@
 (function () {
 
-    var is_dev, api_url;
+    var api_url;
 
     /*
-        Zendesk says don't access window, but I can't think of
-        another way to conditionally set environment (is_dev)
-        than accessing the window object.
+     Zendesk says don't access window, but I can't think of
+     another way to conditionally set environment (is_dev)
+     than accessing the window object.
      */
     (function () {
-        is_dev  = /zat=true/.test(this.location.href);
-        api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+
+        var $      = this.jQuery,
+            window = this,
+            is_dev = /zat=true/.test(window.location.href),
+            stylesheet_url;
+
+        api_url    = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+
+        stylesheet_url = (is_dev ? 'http://localhost:4567' : '') + '/styles.css';
+
+        $('head').append('<link rel="stylesheet" type="text/css" href="' + stylesheet_url + '">');
+
     })();
 
     return {
@@ -98,20 +108,16 @@
 
         on_app_activated: function (event) {
 
+            console.log('body', this.$('#wrapper'));
+
             if (event.firstLoad) {
                 this.load_ticket_sidebar(event);
-                this.load_styles();
             }
 
         },
 
         on_pane_activated: function () {
             this.load_calendar();
-        },
-
-        load_styles: function () {
-            var url = this.assetURL('styles.css');
-            this.$('head').append('<link rel="stylesheet" type="text/css" href="' + url + '">');
         },
 
         load_ticket_sidebar: function () {
@@ -148,27 +154,27 @@
 
             this.when(self.ajax('agents'), self.ajax('my_tickets', agent_id))
                 .done(
-                function (agents_data, tickets_data) {
+                    function (agents_data, tickets_data) {
 
-                    var agent_ref  = self.build_agent_reference(agents_data[0].users),
-                        ticket_ref = self.build_ticket_reference(tickets_data[0].results),
-                        ticket_ids = Object.keys(ticket_ref).join(',');
+                        var agent_ref  = self.build_agent_reference(agents_data[0].users),
+                            ticket_ref = self.build_ticket_reference(tickets_data[0].results),
+                            ticket_ids = Object.keys(ticket_ref).join(',');
 
-                    self.ajax('tasks', ticket_ids).done(function (result) {
+                        self.ajax('tasks', ticket_ids).done(function (result) {
 
-                            self.format_task_dates(result.data);
+                                self.format_task_dates(result.data);
 
-                            view_data.total          = result.data.length;
-                            view_data.no_tasks_found = result.data.length === 0;
-                            view_data.categories     = this.split_calendar_tasks(result.data, ticket_ref, agent_ref);
+                                view_data.total = result.data.length;
+                                view_data.no_tasks_found = result.data.length === 0;
+                                view_data.categories = this.split_calendar_tasks(result.data, ticket_ref, agent_ref);
 
-                            self.switchTo('calendar', view_data);
+                                self.switchTo('calendar', view_data);
 
-                        }
-                    );
+                            }
+                        );
 
-                }
-            );
+                    }
+                );
 
         },
 
@@ -401,14 +407,14 @@
 
             var i,
                 now            = moment(),
-                soon_before    = moment().add(7, 'days'),
+                soon_before = moment().add(7, 'days'),
                 temp_date,
                 is_overdue,
                 is_today,
                 is_soon,
-                today_tasks    = [],
-                soon_tasks     = [],
-                future_tasks   = [],
+                today_tasks = [],
+                soon_tasks  = [],
+                future_tasks = [],
                 complete_tasks = [];
 
             for (i = 0; i < tasks.length; i++) {
