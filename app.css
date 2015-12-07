@@ -15,6 +15,24 @@
   color:       #333;
 }
 
+.Page-headingTab {
+
+  display:      inline-block;
+  margin-right: 10px;
+
+  // Make it look like a link
+  &:not(.is-active) {
+    font-weight: normal;
+    color:       #1a6690;
+    cursor:      pointer;
+  }
+
+  &:not(.is-active):hover {
+    color:           #005580;
+    text-decoration: underline;
+  }
+}
+
 .Page-headerCount {
   margin-left: 30px;
   line-height: 16px;
@@ -243,7 +261,7 @@ header {
 }
 
 .Task-trash-icon {
-  cursor:  pointer;
+  cursor: pointer;
 }
 
 /*

@@ -1,6 +1,7 @@
 (function () {
 
-    var api_url;
+    var api_url,
+        calendar_mode = 'my_tickets';
 
     /*
      Zendesk says don't access window, but I can't think of
@@ -14,7 +15,7 @@
             is_dev = /zat=true/.test(window.location.href),
             stylesheet_url;
 
-        api_url    = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+        api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
 
         stylesheet_url = (is_dev ? 'http://localhost:4567' : '') + '/styles.css';
 
@@ -25,15 +26,17 @@
     return {
 
         events: {
-            'app.activated':             'on_app_activated',
-            'pane.activated':            'on_pane_activated',
-            'click .js_new':             'new',
-            'click .js_edit':            'edit',
-            'click .js_cancel_edit':     'cancel_edit',
-            'submit .js_save':           'save',
-            'click .js_delete':          'delete',
-            'click .js_mark_complete':   'mark_complete',
-            'click .js_mark_incomplete': 'mark_incomplete'
+            'app.activated':                'on_app_activated',
+            'pane.activated':               'on_pane_activated',
+            'click .js_new':                'new',
+            'click .js_edit':               'edit',
+            'click .js_cancel_edit':        'cancel_edit',
+            'submit .js_save':              'save',
+            'click .js_delete':             'delete',
+            'click .js_mark_complete':      'mark_complete',
+            'click .js_mark_incomplete':    'mark_incomplete',
+            'click .js_load_my_calendar':   'load_my_calendar',
+            'click .js_load_full_calendar': 'load_full_calendar'
         },
 
         requests: {
@@ -108,8 +111,6 @@
 
         on_app_activated: function (event) {
 
-            console.log('body', this.$('#wrapper'));
-
             if (event.firstLoad) {
                 this.load_ticket_sidebar(event);
             }
@@ -142,6 +143,16 @@
 
         },
 
+        load_my_calendar: function () {
+            calendar_mode = 'my_tickets';
+            this.load_calendar();
+        },
+
+        load_full_calendar: function () {
+            calendar_mode = 'tickets';
+            this.load_calendar();
+        },
+
         load_calendar: function () {
 
             if (this.currentLocation() !== 'nav_bar')
@@ -149,10 +160,9 @@
 
             var self      = this,
                 agent_id  = this.currentUser().id(),
-                view_data = {},
-                agent_ref;
+                view_data = {};
 
-            this.when(self.ajax('agents'), self.ajax('my_tickets', agent_id))
+            this.when(self.ajax('agents'), self.ajax(calendar_mode, agent_id))
                 .done(
                     function (agents_data, tickets_data) {
 
@@ -164,6 +174,7 @@
 
                                 self.format_task_dates(result.data);
 
+                                view_data.is_my_calendar = (calendar_mode === 'my_tickets');
                                 view_data.total = result.data.length;
                                 view_data.no_tasks_found = result.data.length === 0;
                                 view_data.categories = this.split_calendar_tasks(result.data, ticket_ref, agent_ref);

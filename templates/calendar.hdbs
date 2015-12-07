@@ -1,6 +1,14 @@
 <form class="Calendar">
 
-  <h1 class="Page-heading">Your Tasks</h1>
+  <h1 class="Page-heading">
+    {{#if is_my_calendar}}
+      <span class="Page-headingTab is-active">Your Tasks</span>
+      <span class="Page-headingTab js_load_full_calendar">All Tasks</span>
+    {{else}}
+      <span class="Page-headingTab js_load_my_calendar">Your Tasks</span>
+      <span class="Page-headingTab is-active">All Tasks</span>
+    {{/if}}
+  </h1>
 
   <div class="Page-headerCount">{{total}} tasks</div>
 
@@ -59,7 +67,7 @@
                 <td class="status-{{status}}"><img class="TicketTable-gravatar" src="{{agent.photo}}"> {{agent.name}}</td>
                 <td>
                   {{#unless is_completed}}
-                    <img class="Task-trash-icon js_delete" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" src="{{assetURL 'trash.png'}}" title="Remove task">
+                    <img class="Task-trash-icon js_delete" data-ticket-id="{{ticket.id}}" data-task-id="{{id}}" data-task-title="{{title}}" src="{{assetURL 'trash.png'}}" title="Remove task">
                   {{/unless}}
                 </td>
                 <td class="TicketTable-trailing"></td>
