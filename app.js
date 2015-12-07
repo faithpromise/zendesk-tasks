@@ -10,16 +10,18 @@
      */
     (function () {
 
-        var $      = this.jQuery,
-            window = this,
+        var window = this,
             is_dev = /zat=true/.test(window.location.href),
-            stylesheet_url;
+            style  = window.document.createElement('style'),
+            app_id = is_dev ? '0' : '74931';
 
         api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
 
-        stylesheet_url = (is_dev ? 'http://localhost:4567' : '') + '/styles.css';
+        style.appendChild(window.document.createTextNode(''));
+        window.document.head.appendChild(style);
 
-        $('head').append('<link rel="stylesheet" type="text/css" href="' + stylesheet_url + '">');
+        style.sheet.insertRule('.app-' + app_id + '.apps_ticket_sidebar { background-color: transparent !important; padding-left: 10px !important; padding-right: 10px !important; clear: both; width: 330px !important; border: none !important; }', 0);
+        style.sheet.insertRule('.app-' + app_id + '.apps_nav_bar { margin-top: 0 !important; padding: 0 !important; }', 0);
 
     })();
 
@@ -166,7 +168,7 @@
                 .done(
                     function (agents_data, tickets_data) {
 
-                        var agent_ref  = self.build_agent_reference(agents_data[0].users),
+                        var agent_ref = self.build_agent_reference(agents_data[0].users),
                             ticket_ref = self.build_ticket_reference(tickets_data[0].results),
                             ticket_ids = Object.keys(ticket_ref).join(',');
 
@@ -175,9 +177,9 @@
                                 self.format_task_dates(result.data);
 
                                 view_data.is_my_calendar = (calendar_mode === 'my_tickets');
-                                view_data.total = result.data.length;
+                                view_data.total          = result.data.length;
                                 view_data.no_tasks_found = result.data.length === 0;
-                                view_data.categories = this.split_calendar_tasks(result.data, ticket_ref, agent_ref);
+                                view_data.categories     = this.split_calendar_tasks(result.data, ticket_ref, agent_ref);
 
                                 self.switchTo('calendar', view_data);
 
