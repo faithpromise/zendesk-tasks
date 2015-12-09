@@ -14,7 +14,9 @@
 
   {{#if no_tasks_found}}
 
-    <p>Oh yeah! There's nothin' to do!</p>
+    <div class="InboxZero">
+      There's currently no tasks. Check out {{#if is_my_calendar}} <span class="link js_load_full_calendar">all tasks</span> {{/if}} or the unresolved tickets view.
+    </div>
 
   {{else}}
 

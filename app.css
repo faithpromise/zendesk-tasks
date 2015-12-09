@@ -1,3 +1,13 @@
+.link {
+  color:  #1a6690;
+  cursor: pointer;
+
+  &:hover {
+    color:           #005580;
+    text-decoration: underline;
+  }
+}
+
 /*
   Mimic Zendesk styles
 
@@ -47,6 +57,10 @@
 
 .Calendar {
   padding: 0;
+}
+
+.InboxZero {
+  padding: 30px;
 }
 
 .TicketTable {
