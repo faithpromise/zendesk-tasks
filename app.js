@@ -27,6 +27,8 @@
 
     return {
 
+        defaultState: 'loading',
+
         events: {
             'app.activated':                'on_app_activated',
             'pane.activated':               'on_pane_activated',
