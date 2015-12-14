@@ -63,7 +63,7 @@
                   <span class="pop ticket_status_label compact open">{{ticket.status_abbrev}}</span>
                 </td>
                 <td class="TicketTable-subject status-{{status}}">
-                  {{title}} / <a href="#/tickets/{{zendesk_ticket_id}}">{{ticket.subject}}</a>
+                  <a href="#/tickets/{{zendesk_ticket_id}}">{{ticket.subject}}</a> / {{title}}
                 </td>
                 <td class="status-{{status}}"><span title="{{due_at_formatted}}">{{due_at_friendly}}</span></td>
                 <td class="status-{{status}}"><img class="TicketTable-gravatar" src="{{agent.photo}}"> {{agent.name}}</td>
