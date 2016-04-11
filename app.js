@@ -15,7 +15,7 @@
             style  = window.document.createElement('style'),
             app_id = is_dev ? '0' : '74931';
 
-        api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'http://admin.faithpromise.org';
+        api_url = is_dev ? 'http://admin.faithpromise.192.168.10.10.xip.io' : 'https://admin.faithpromise.org';
 
         style.appendChild(window.document.createTextNode(''));
         window.document.head.appendChild(style);
