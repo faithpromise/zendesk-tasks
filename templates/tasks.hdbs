@@ -15,13 +15,12 @@
 
   {{else}}
 
-    {{#if tasks.incomplete}}
-
       <header>
         <span class="Widget-action js_new">add task</span>
         <h3>Tasks ({{tasks.incomplete.length}})</h3>
       </header>
 
+    {{#if tasks.incomplete}}
       <table class="TaskList">
         {{#each tasks.incomplete}}
           <tr>
